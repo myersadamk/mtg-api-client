@@ -2,6 +2,8 @@ package com.exigentech.mtgapiclient;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
