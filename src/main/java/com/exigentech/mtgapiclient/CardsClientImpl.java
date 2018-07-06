@@ -19,14 +19,11 @@ import reactor.core.publisher.Mono;
 @Component
 public final class CardsClientImpl implements CardsClient {
 
+  private final static String BASE_URI = "https://api.magicthegathering.io/v1/cards";
   private final ObjectMapper mapper;
   private final WebClient client;
-  private final static String url = "https://api.magicthegathering.io/v1/cards";
-  private String nextPage = null;
-  private String lastPage = null;
 
   @Autowired
-//  public GetCardsClientImpl(WebClient client, @Qualifier("mtgapi.baseurl") URL baseURL) {
   public CardsClientImpl(ObjectMapper mapper, WebClient client) {
     this.mapper = mapper;
     this.client = client;
@@ -35,9 +32,9 @@ public final class CardsClientImpl implements CardsClient {
   @Override
   public Mono<? extends PagedCards> getFirstPage() {
     return fromCallable(() -> {
-      final var builder = ImmutablePagedCards.builder().self(URI.create(url));
+      final var builder = ImmutablePagedCards.builder().self(URI.create(BASE_URI));
 
-      client.get().uri(url).exchange().doOnNext(
+      client.get().uri(BASE_URI).exchange().doOnNext(
           response -> {
             try {
               builder.cards(
