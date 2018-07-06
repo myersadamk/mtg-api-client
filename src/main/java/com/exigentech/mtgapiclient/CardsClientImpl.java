@@ -30,7 +30,7 @@ public final class CardsClientImpl implements CardsClient {
   }
 
   @Override
-  public Mono<? extends PagedCards> getFirstPage() {
+  public PagedCards getFirstPage() {
     return fromCallable(() -> {
       final var builder = ImmutablePagedCards.builder().self(URI.create(BASE_URI));
 
@@ -47,13 +47,13 @@ public final class CardsClientImpl implements CardsClient {
       ).block();
 
       return builder.build();
-    });
+    }).block();
   }
 
   @Override
-  public Mono<? extends PagedCards> getNextPage(PagedCards page) {
+  public PagedCards getNextPage(PagedCards page) {
     if (page.self().equals(page.last())) {
-      return empty();
+      throw new IllegalArgumentException();
     }
 
     return fromCallable(() -> {
@@ -74,6 +74,6 @@ public final class CardsClientImpl implements CardsClient {
       ).block();
 
       return builder.build();
-    });
+    }).block();
   }
 }
