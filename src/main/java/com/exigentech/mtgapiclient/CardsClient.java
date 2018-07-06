@@ -1,8 +1,8 @@
 package com.exigentech.mtgapiclient;
 
-import com.exigentech.mtgapiclient.model.Card;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface CardsClient {
-  Flux<Card> getAll();
+  Mono<? extends PagedCards> getFirstPage();
+  Mono<? extends PagedCards> getNextPage(PagedCards page);
 }

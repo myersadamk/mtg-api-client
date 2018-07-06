@@ -2,8 +2,6 @@ package com.exigentech.mtgapiclient;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static reactor.core.publisher.Flux.empty;
-import static reactor.core.publisher.Flux.first;
 import static reactor.core.publisher.Flux.generate;
 import static reactor.core.publisher.Flux.just;
 
