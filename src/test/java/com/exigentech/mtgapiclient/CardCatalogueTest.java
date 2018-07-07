@@ -1,20 +1,22 @@
 package com.exigentech.mtgapiclient;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.exigentech.mtgapiclient.cards.CardsClientImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class CardsClientImplTest {
+class CardCatalogueTest {
+
   @Test
-  void lol(@Autowired WebClient client, @Autowired ObjectMapper mapper) {
-    new CardsClientImpl(mapper, client).getFirstPage().block().cards().forEach(System.out::println);
+  void lol(@Autowired CardCatalog catalog) {
+    final var flux = catalog.getAllCards();
+    flux.toIterable().forEach(System.out::println);
+//    final var lol = new CardCatalog(client).getAllCards().subscribe(System.out::println);
+//    assertTrue(lol.isDisposed());
   }
 }

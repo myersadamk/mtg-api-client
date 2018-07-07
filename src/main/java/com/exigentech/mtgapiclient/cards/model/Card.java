@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.model;
+package com.exigentech.mtgapiclient.cards.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.immutables.value.Value.Immutable;
