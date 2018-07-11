@@ -22,8 +22,6 @@ public class WebConfig {
   @Bean
   public ObjectMapper objectMapper() {
     return new ObjectMapper()
-        .configure(IGNORE_UNDEFINED, true)
-        .configure(IGNORE_UNKNOWN, true)
         .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(new GuavaModule());
   }

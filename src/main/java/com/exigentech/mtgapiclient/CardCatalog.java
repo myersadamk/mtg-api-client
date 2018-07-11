@@ -1,10 +1,8 @@
 package com.exigentech.mtgapiclient;
 
-import static java.util.function.Function.identity;
-import static reactor.core.publisher.Flux.generate;
-
 import com.exigentech.mtgapiclient.cards.CardsClient;
 import com.exigentech.mtgapiclient.cards.model.Card;
+import com.exigentech.mtgapiclient.cards.model.PagedCards;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,29 +17,17 @@ public class CardCatalog {
     this.client = client;
   }
 
+  // Using relationships
   public Flux<Card> getAllCards() {
-    return Flux.create((sink) -> {
-      final var page = client.getFirstPage();
-
-      page.flux().flatMapIterable(p -> p.cards()).subscribe(p -> sink.next(p));
-
-      page.flux().flatMapIterable(p -> p.cards()).subscribe(p -> sink.next(p));
-
+    final Flux<PagedCards> pages = Flux.generate(client::getFirstPage, (response, sink) -> {
+      final var page = response.block();
+      sink.next(page);
+      if (page.self().equals(page.last())) {
+        sink.complete();
+        return response;
+      }
+      return client.getNextPage(page);
     });
-//    return Flux.generate(client::getFirstPage, (page, sink) -> {
-//      final Mono<? extends PagedCards> nextPage = client.getNextPage(page.block());
-//      sink.complete();
-//      return page;
-//    });
+    return pages.flatMapIterable(PagedCards::cards);
   }
-//    final Flux<Collection<Card>> pagedFlux = generate(client::getFirstPage, (page, sink) -> {
-//          sink.next(page.cards());
-//          if (page.self().equals(page.last())) {
-//            sink.complete();
-//            return null;
-//          }
-//          return client.getNextPage(page);
-//        }
-//    );
-//    return pagedFlux.flatMapIterable(identity());
 }
