@@ -1,7 +1,7 @@
 package com.exigentech.mtgapiclient;
 
 
-import com.exigentech.mtgapiclient.cards.CardsClientImpl;
+import com.exigentech.mtgapiclient.cards.client.CardsClientImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

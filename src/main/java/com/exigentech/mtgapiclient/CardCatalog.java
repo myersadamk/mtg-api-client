@@ -1,14 +1,16 @@
 package com.exigentech.mtgapiclient;
 
-import com.exigentech.mtgapiclient.cards.CardsClient;
-import com.exigentech.mtgapiclient.cards.model.Card;
-import com.exigentech.mtgapiclient.cards.model.PagedCards;
+import static reactor.core.publisher.Flux.generate;
+
+import com.exigentech.mtgapiclient.cards.client.CardPage;
+import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
-public class CardCatalog {
+public final class CardCatalog {
 
   private final CardsClient client;
 
@@ -19,15 +21,18 @@ public class CardCatalog {
 
   // Using relationships
   public Flux<Card> getAllCards() {
-    final Flux<PagedCards> pages = Flux.generate(client::getFirstPage, (response, sink) -> {
-      final var page = response.block();
-      sink.next(page);
-      if (page.self().equals(page.last())) {
-        sink.complete();
-        return response;
-      }
-      return client.getNextPage(page);
-    });
-    return pages.flatMapIterable(PagedCards::cards);
+    final var pageGenerator = Flux.<CardPage, Mono<? extends CardPage>>
+        generate(
+        client::getFirstPage, (response, sink) -> {
+          final var page = response.block();
+          sink.next(page);
+
+          if (page.next().isPresent()) {
+            return client.getNextPage(page);
+          }
+          sink.complete();
+          return null;
+        });
+    return pageGenerator.flatMapIterable(CardPage::cards);
   }
 }
