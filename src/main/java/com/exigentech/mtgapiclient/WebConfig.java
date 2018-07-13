@@ -2,6 +2,7 @@ package com.exigentech.mtgapiclient;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
+import com.exigentech.mtgapiclient.cards.client.model.BodyParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,10 @@ public class WebConfig {
     return new ObjectMapper()
         .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(new GuavaModule());
+  }
+
+  @Bean
+  public BodyParser jsonDeserializer(ObjectMapper objectMapper) {
+    return new BodyParser(objectMapper);
   }
 }

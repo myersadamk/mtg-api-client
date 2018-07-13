@@ -6,6 +6,6 @@ import org.immutables.value.Value.Immutable;
 
 @Immutable
 @JsonDeserialize(as = ImmutableCards.class)
-public interface Cards extends Model {
+public interface Cards {
   Set<RetrievedCard> cards();
 }

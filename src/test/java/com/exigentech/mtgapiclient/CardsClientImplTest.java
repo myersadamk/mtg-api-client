@@ -2,7 +2,7 @@ package com.exigentech.mtgapiclient;
 
 
 import com.exigentech.mtgapiclient.cards.client.CardsClientImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.exigentech.mtgapiclient.cards.client.model.BodyParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @ExtendWith(SpringExtension.class)
 class CardsClientImplTest {
   @Test
-  void lol(@Autowired WebClient client, @Autowired ObjectMapper mapper) {
-    new CardsClientImpl(mapper, client).getFirstPage().block().cards().forEach(System.out::println);
+  void lol(@Autowired WebClient client, @Autowired BodyParser parser) {
+    new CardsClientImpl(parser, client).getFirstPage().block().cards().forEach(System.out::println);
   }
 }

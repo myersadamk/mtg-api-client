@@ -5,8 +5,7 @@ import static org.springframework.http.HttpHeaders.LINK;
 
 import com.exigentech.mtgapiclient.cards.client.ImmutableCardPage.Builder;
 import com.exigentech.mtgapiclient.cards.client.model.Cards;
-import com.exigentech.mtgapiclient.cards.client.model.Model;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.exigentech.mtgapiclient.cards.client.model.BodyParser;
 import java.net.URI;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -22,29 +21,30 @@ public final class CardsClientImpl implements CardsClient {
 
   private final static URI BASE_URI = URI
       .create("https://api.magicthegathering.io/v1/cards?page=130");
-  private final ObjectMapper mapper;
+
+  private final BodyParser parser;
   private final WebClient client;
 
   @Autowired
-  public CardsClientImpl(ObjectMapper mapper, WebClient client) {
-    this.mapper = mapper;
+  public CardsClientImpl(BodyParser parser, WebClient client) {
+    this.parser = parser;
     this.client = client;
   }
 
   @Override
-  public Mono<? extends CardPage> getFirstPage() {
+  public Mono<CardPage> getFirstPage() {
     return get(BASE_URI);
   }
 
   @Override
-  public Mono<? extends CardPage> getNextPage(CardPage page) {
+  public Mono<CardPage> getNextPage(CardPage page) {
     if (page.self().equals(page.last())) {
       throw new IllegalArgumentException();
     }
     return page.next().map(this::get).orElse(Mono.empty());
   }
 
-  private Mono<? extends CardPage> get(final URI uri) {
+  private Mono<CardPage> get(final URI uri) {
     final var builder = ImmutableCardPage.builder().self(uri);
     final var publisher = client.get().uri(uri).exchange();
 
@@ -53,10 +53,7 @@ public final class CardsClientImpl implements CardsClient {
         .doOnError(RuntimeException::new)
         .doOnNext(spec -> populateLinks(uri, spec.headers().asHttpHeaders(), builder))
         .flatMap(spec -> spec.bodyToMono(String.class))
-        .map(body -> {
-          final Cards cards = Model.<Cards, RuntimeException>deserialize(body, mapper, RuntimeException::new);
-          return builder.cards(cards.cards()).build();
-        });
+        .map(body -> builder.cards(parser.parse(Cards.class, body).cards()).build());
   }
 
   // TODO: throw into another class
