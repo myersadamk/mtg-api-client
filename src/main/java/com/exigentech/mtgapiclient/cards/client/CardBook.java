@@ -23,7 +23,7 @@ public class CardBook {
         ).get("page");
 
     if (lastPageParam == null) {
-      // hell
+      // TODO
     }
 
     return new CardBook(Integer.valueOf(lastPageParam), baseURI);
