@@ -1,6 +1,6 @@
 package com.exigentech.mtgapiclient;
 
-import com.exigentech.mtgapiclient.cards.model.CardCatalog;
+import com.exigentech.mtgapiclient.cards.service.CardCatalog;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

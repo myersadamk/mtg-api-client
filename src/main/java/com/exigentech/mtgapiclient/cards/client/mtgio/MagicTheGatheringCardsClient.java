@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.cards.client.magicthegathering;
+package com.exigentech.mtgapiclient.cards.client.mtgio;
 
 import static java.util.regex.Pattern.compile;
 import static org.springframework.http.HttpHeaders.LINK;

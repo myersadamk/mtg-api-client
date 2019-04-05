@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.cards.client.magicthegathering;
+package com.exigentech.mtgapiclient.cards.client.mtgio;
 
 
 
