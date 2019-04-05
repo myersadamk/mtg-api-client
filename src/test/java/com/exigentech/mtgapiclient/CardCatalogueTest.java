@@ -1,5 +1,6 @@
 package com.exigentech.mtgapiclient;
 
+import com.exigentech.mtgapiclient.cards.model.CardCatalog;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class CardCatalogueTest {
 
   @Test
-  void lol(@Autowired CardCatalog catalog) {
+  void printCards(@Autowired CardCatalog catalog) {
     final var flux = catalog.getAllCards();
     flux.take(10).subscribe(System.out::println);
 //    flux.toIterable().forEach(System.out::println);
-//    final var lol = new CardCatalog(client).getAllCards().subscribe(System.out::println);
-//    assertTrue(lol.isDisposed());
+//    final var printCards = new CardCatalog(client).getAllCards().subscribe(System.out::println);
+//    assertTrue(printCards.isDisposed());
   }
 }

@@ -8,10 +8,15 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class CardBook {
+public final class CardBook {
 
   private final int pageCount;
   private final URI baseURI;
+
+  public CardBook(int pageCount, URI baseURI) {
+    this.pageCount = pageCount;
+    this.baseURI = baseURI;
+  }
 
   public static CardBook create(CardPage page, URI baseURI) {
     final var lastPageParam = stream(page.last().getQuery().split("&"))
@@ -35,10 +40,5 @@ public class CardBook {
 
   private URI constructURI(final int pageNumber) {
     return UriComponentsBuilder.fromUri(baseURI).queryParam("page", pageNumber).build().toUri();
-  }
-
-  public CardBook(int pageCount, URI baseURI) {
-    this.pageCount = pageCount;
-    this.baseURI = baseURI;
   }
 }

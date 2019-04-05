@@ -1,16 +1,15 @@
-package com.exigentech.mtgapiclient;
+package com.exigentech.mtgapiclient.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
-import com.exigentech.mtgapiclient.cards.client.model.BodyParser;
+import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebConfig {
+public class WebClientConfig {
 
   @Bean
   public WebClient webClient() {
@@ -21,7 +20,7 @@ public class WebConfig {
   public ObjectMapper objectMapper() {
     return new ObjectMapper()
         .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .registerModule(new GuavaModule());
+        .findAndRegisterModules();
   }
 
   @Bean

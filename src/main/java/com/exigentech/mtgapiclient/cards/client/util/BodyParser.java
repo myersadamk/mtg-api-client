@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.cards.client.model;
+package com.exigentech.mtgapiclient.cards.client.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

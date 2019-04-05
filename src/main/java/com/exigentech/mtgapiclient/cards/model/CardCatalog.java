@@ -1,9 +1,10 @@
-package com.exigentech.mtgapiclient;
+package com.exigentech.mtgapiclient.cards.model;
 
 import static reactor.core.publisher.Flux.generate;
 
 import com.exigentech.mtgapiclient.cards.client.CardPage;
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
+import com.exigentech.mtgapiclient.cards.model.Card;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

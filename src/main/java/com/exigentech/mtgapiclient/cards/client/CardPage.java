@@ -1,6 +1,6 @@
 package com.exigentech.mtgapiclient.cards.client;
 
-import com.exigentech.mtgapiclient.Card;
+import com.exigentech.mtgapiclient.cards.model.Card;
 import java.net.URI;
 import java.util.Optional;
 import java.util.Set;

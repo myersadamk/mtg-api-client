@@ -1,11 +1,14 @@
-package com.exigentech.mtgapiclient.cards.client;
+package com.exigentech.mtgapiclient.cards.client.magicthegathering;
 
 import static java.util.regex.Pattern.compile;
 import static org.springframework.http.HttpHeaders.LINK;
 
+import com.exigentech.mtgapiclient.cards.client.CardPage;
+import com.exigentech.mtgapiclient.cards.client.CardsClient;
+import com.exigentech.mtgapiclient.cards.client.ImmutableCardPage;
 import com.exigentech.mtgapiclient.cards.client.ImmutableCardPage.Builder;
 import com.exigentech.mtgapiclient.cards.client.model.Cards;
-import com.exigentech.mtgapiclient.cards.client.model.BodyParser;
+import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
 import java.net.URI;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -17,7 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Component
-public final class CardsClientImpl implements CardsClient {
+public final class MagicTheGatheringCardsClient implements CardsClient {
 
   private final static URI BASE_URI = URI
       .create("https://api.magicthegathering.io/v1/cards?page=130");
@@ -26,7 +29,7 @@ public final class CardsClientImpl implements CardsClient {
   private final WebClient client;
 
   @Autowired
-  public CardsClientImpl(BodyParser parser, WebClient client) {
+  public MagicTheGatheringCardsClient(BodyParser parser, WebClient client) {
     this.parser = parser;
     this.client = client;
   }
