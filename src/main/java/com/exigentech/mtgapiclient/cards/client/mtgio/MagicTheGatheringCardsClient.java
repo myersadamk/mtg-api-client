@@ -3,12 +3,12 @@ package com.exigentech.mtgapiclient.cards.client.mtgio;
 import static java.util.regex.Pattern.compile;
 import static org.springframework.http.HttpHeaders.LINK;
 
-import com.exigentech.mtgapiclient.cards.client.CardPage;
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
-import com.exigentech.mtgapiclient.cards.client.ImmutableCardPage;
-import com.exigentech.mtgapiclient.cards.client.ImmutableCardPage.Builder;
-import com.exigentech.mtgapiclient.cards.client.model.Cards;
+import com.exigentech.mtgapiclient.cards.client.mtgio.model.Cards;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
+import com.exigentech.mtgapiclient.cards.model.CardPage;
+import com.exigentech.mtgapiclient.cards.model.ImmutableCardPage;
+import com.exigentech.mtgapiclient.cards.model.ImmutableCardPage.Builder;
 import java.net.URI;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 public final class MagicTheGatheringCardsClient implements CardsClient {
 
   private final static URI BASE_URI = URI
-      .create("https://api.magicthegathering.io/v1/cards?page=130");
+      .create("https://api.magicthegathering.io/v1/cards?page=1");
 
   private final BodyParser parser;
   private final WebClient client;

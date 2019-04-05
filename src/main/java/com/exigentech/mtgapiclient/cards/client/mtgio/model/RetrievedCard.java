@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.cards.client.model;
+package com.exigentech.mtgapiclient.cards.client.mtgio.model;
 
 import com.exigentech.mtgapiclient.cards.model.Card;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

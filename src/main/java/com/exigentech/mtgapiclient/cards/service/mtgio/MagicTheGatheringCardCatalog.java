@@ -2,7 +2,7 @@ package com.exigentech.mtgapiclient.cards.service.mtgio;
 
 import static reactor.core.publisher.Flux.generate;
 
-import com.exigentech.mtgapiclient.cards.client.CardPage;
+import com.exigentech.mtgapiclient.cards.model.CardPage;
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.model.Card;
 import com.exigentech.mtgapiclient.cards.service.CardCatalog;

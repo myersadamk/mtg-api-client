@@ -2,6 +2,7 @@ package com.exigentech.mtgapiclient.cards.client;
 
 import static java.util.Arrays.stream;
 
+import com.exigentech.mtgapiclient.cards.model.CardPage;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
