@@ -7,9 +7,11 @@ import static reactor.core.publisher.Flux.just;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
+@Disabled
 final class PagedResponseKoan {
 
   final static class KoanPage {
