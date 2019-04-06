@@ -8,7 +8,7 @@ import java.util.function.Function;
  * Class may not be carrying its weight.. essentially this just wraps ObjectMapper so we don't have
  * to deal with an annoying try/catch with an IO exception.
  */
-public final class BodyParser {
+public class BodyParser {
 
   private final ObjectMapper mapper;
 
