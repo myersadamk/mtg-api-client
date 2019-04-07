@@ -5,8 +5,8 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.client.mtgio.MagicTheGatheringCardsClient;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
-import com.exigentech.mtgapiclient.cards.service.CardCatalog;
-import com.exigentech.mtgapiclient.cards.service.mtgio.MagicTheGatheringCardCatalog;
+import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
+import com.exigentech.mtgapiclient.cards.service.catalog.mtgio.MagicTheGatheringCardCatalog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

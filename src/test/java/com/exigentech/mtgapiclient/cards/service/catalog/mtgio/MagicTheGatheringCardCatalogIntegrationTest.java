@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.cards.service.mtgio;
+package com.exigentech.mtgapiclient.cards.service.catalog.mtgio;
 
 import static java.lang.String.format;
 import static java.lang.System.out;
