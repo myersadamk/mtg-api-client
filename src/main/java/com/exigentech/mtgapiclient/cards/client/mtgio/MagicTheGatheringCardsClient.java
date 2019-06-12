@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 @Component
 public final class MagicTheGatheringCardsClient implements CardsClient {
 
-  private final static URI BASE_URI = URI.create("https://api.magicthegathering.io/v1/cards?page=1");
+  private final static URI BASE_URI = URI.create("https://api.magicthegathering.io/v1/cards?page=0");
 
   private final BodyParser parser;
   private final WebClient client;
