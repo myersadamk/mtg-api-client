@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 
 final class PageHeaderIntrospector {
 
-  // TODO: throw into another class
   private static final String LINK_RELATIONSHIP_PATTERN = "<([\\w:/\\.\\d\\?=]+)>; rel=\"%s\"";
   private static final Pattern NEXT = compile(String.format(LINK_RELATIONSHIP_PATTERN, "next"));
   private static final Pattern LAST = compile(String.format(LINK_RELATIONSHIP_PATTERN, "last"));

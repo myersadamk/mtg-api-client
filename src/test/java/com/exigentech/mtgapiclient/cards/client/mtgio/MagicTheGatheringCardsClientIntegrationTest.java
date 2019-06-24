@@ -12,10 +12,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = MagicTheGatheringApiConfig.class)
-class MagicTheGatheringCardsClientIntegrationTest {
+final class MagicTheGatheringCardsClientIntegrationTest {
 
   @Test
-  void printCards(@Autowired WebClient client, @Autowired BodyParser parser) {
+  void printCardsOnFirstPage(@Autowired WebClient client, @Autowired BodyParser parser) {
     new MagicTheGatheringCardsClient(parser, client).getFirstPage().block().cards().forEach(System.out::println);
   }
 }
