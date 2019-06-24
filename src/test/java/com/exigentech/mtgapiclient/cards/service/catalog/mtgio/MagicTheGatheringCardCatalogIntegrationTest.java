@@ -48,8 +48,9 @@ class MagicTheGatheringCardCatalogIntegrationTest {
   void countCards() {
     out.println(
         format(
-            "The total amount of Magic: The Gathering cards is %d",
-            cardCatalog.getAllCards().take(cardRetrievalBase).count().block()
+            "Counted %d Magic: The Gathering cards (base retrieval limit: %d)",
+            cardCatalog.getAllCards().take(cardRetrievalBase).count().block(),
+            cardRetrievalBase
         )
     );
   }
