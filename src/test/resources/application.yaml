@@ -1,0 +1,8 @@
+spring:
+  main:
+    banner-mode: 'off'
+test:
+  integration:
+    enabled: 'true'
+    card-retrieval-base: 100
+    card-retrieval-max: 1000

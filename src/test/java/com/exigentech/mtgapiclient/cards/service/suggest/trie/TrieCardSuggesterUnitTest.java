@@ -4,7 +4,7 @@
 //import static org.hamcrest.Matchers.is;
 //import static org.mockito.Mockito.when;
 //
-//import com.exigentech.mtgapiclient.cards.client.mtgio.model.ImmutableRetrievedCard;
+//import com.exigentech.mtgapiclient.cards.client.model.ImmutableRetrievedCard;
 //import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;

@@ -3,21 +3,18 @@ package com.exigentech.mtgapiclient.cards.client.mtgio;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.exigentech.mtgapiclient.cards.client.mtgio.model.Cards;
-import com.exigentech.mtgapiclient.cards.client.mtgio.model.ImmutableCards;
+import com.exigentech.mtgapiclient.cards.client.model.ImmutableRawCard;
+import com.exigentech.mtgapiclient.cards.client.model.ImmutableRawCards;
+import com.exigentech.mtgapiclient.cards.client.model.Page;
+import com.exigentech.mtgapiclient.cards.client.model.RawCard;
+import com.exigentech.mtgapiclient.cards.client.model.RawCards;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
-import com.exigentech.mtgapiclient.cards.model.Card;
-import com.exigentech.mtgapiclient.cards.model.CardPage;
-import com.exigentech.mtgapiclient.cards.model.ImmutableCard;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -26,6 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ClientResponse.Headers;
@@ -37,20 +36,24 @@ import reactor.core.publisher.Mono;
 @ExtendWith(MockitoExtension.class)
 class MagicTheGatheringCardsClientUnitTest {
 
-  @Mock
-  private BodyParser bodyParser;
-
-  @Mock
-  private WebClient webClient;
+  private final BodyParser bodyParser;
+  private final WebClient webClient;
+  private final Converter<RawCard, Card> mapper;
 
   private MagicTheGatheringCardsClient magicTheGatheringCardsClient;
 
-  private JacksonTester<Cards> cardsJSON;
+  private final JacksonTester<RawCards> rawCardsJSON =
+      new JacksonTester<>(getClass(), ResolvableType.forClass(RawCards.class), new ObjectMapper());
+
+  MagicTheGatheringCardsClientUnitTest(@Mock BodyParser bodyParser, @Mock WebClient webClient, @Mock Converter<RawCard, Card> mapper) {
+    this.bodyParser = bodyParser;
+    this.webClient = webClient;
+    this.mapper = mapper;
+  }
 
   @BeforeEach
   void setup() {
-    magicTheGatheringCardsClient = new MagicTheGatheringCardsClient(bodyParser, webClient);
-    JacksonTester.initFields(this, new ObjectMapper());
+    magicTheGatheringCardsClient = new MagicTheGatheringCardsClient(webClient, bodyParser, mapper);
   }
 
   @Test
@@ -66,33 +69,40 @@ class MagicTheGatheringCardsClientUnitTest {
     });
     when(response.headers()).thenReturn(headers);
 
-    final Cards cards = createCards();
-    final String responseBody = cardsJSON.write(cards).getJson();
+    final RawCards cards = createCards();
+    final String responseBody = rawCardsJSON.write(cards).getJson();
 
     when(response.bodyToMono(String.class)).thenReturn(Mono.just(responseBody));
-    when(bodyParser.parse(Cards.class, responseBody)).thenReturn(cards);
+    when(bodyParser.parse(RawCards.class, responseBody)).thenReturn(cards);
 
     configureWebClientMocks(spec, response, headers);
 
-    final CardPage firstPage = magicTheGatheringCardsClient.getFirstPage().block();
+    final Page firstPage = magicTheGatheringCardsClient.getFirstPage().block();
     assertThat(firstPage.last()).isEqualTo(lastPageURI);
     assertThat(firstPage.next()).isEqualTo(Optional.of(nextPageURI));
     assertThat(firstPage.self()).isEqualTo(selfPageURI);
     assertThat(firstPage.cards()).isEqualTo(cards.cards());
   }
 
-  private void configureWebClientMocks(RequestHeadersUriSpec spec, ClientResponse response, Headers headers
-  ) {
+  private void configureWebClientMocks(RequestHeadersUriSpec spec, ClientResponse response, Headers headers) {
     when(webClient.get()).thenReturn(spec);
     when(spec.uri(any(URI.class))).thenReturn(spec);
     when(spec.exchange()).thenReturn(Mono.just(response));
   }
 
-  private static Cards createCards() {
-    return ImmutableCards.of(
+//  RawCard{name=Flamewave Invoker, rarity=Uncommon, cmc=3.0, text={7}{R}: Flamewave Invoker deals 5 damage to target player or planeswalker., manaCost={2}{R}, colorIdentity=[R], colors=[Red], types=[Creature]}
+  private static RawCards createCards() {
+    return ImmutableRawCards.of(
         ImmutableSet.of(
-            ImmutableCard.builder()
-                .name("Chandra")
+            ImmutableRawCard.builder()
+                .name("Flamewave Invoker")
+                .rarity("Uncommon")
+                .cmc(3.0)
+                .text("{7}{R}: Flamewave Invoker deals 5 damage to target player or planeswalker.")
+                .manaCost("{2}{R}")
+                .colorIdentity(ImmutableSet.of("R"))
+                .colors(ImmutableSet.of("Red"))
+                .types(ImmutableSet.of("Creature"))
                 .build()
         )
     );

@@ -1,6 +1,5 @@
 package com.exigentech.mtgapiclient.cards.client.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.function.Function;
@@ -17,21 +16,8 @@ public class BodyParser {
     this.mapper = mapper;
   }
 
-  public <T> T parse(TypeReference<T> typeReference, String body) {
-    return parse(typeReference, body, RuntimeException::new);
-  }
-
   public <T> T parse(Class<T> clazz, String body) {
     return parse(clazz, body, RuntimeException::new);
-  }
-
-  public <T, R extends RuntimeException>
-  T parse(TypeReference<T> typeReference, String body, Function<IOException, R> handler) {
-    try {
-      return mapper.readValue(body, typeReference);
-    } catch (IOException exception) {
-      throw handler.apply(exception);
-    }
   }
 
   public <T, R extends RuntimeException>

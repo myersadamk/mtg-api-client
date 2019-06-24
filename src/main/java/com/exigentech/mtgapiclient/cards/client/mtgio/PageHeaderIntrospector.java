@@ -3,7 +3,7 @@ package com.exigentech.mtgapiclient.cards.client.mtgio;
 import static java.util.regex.Pattern.compile;
 import static org.springframework.http.HttpHeaders.LINK;
 
-import com.exigentech.mtgapiclient.cards.model.ImmutableCardPage.Builder;
+import com.exigentech.mtgapiclient.cards.client.model.ImmutablePage.Builder;
 import java.net.URI;
 import java.util.Optional;
 import java.util.regex.Matcher;

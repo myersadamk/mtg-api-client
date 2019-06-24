@@ -1,4 +1,4 @@
-package com.exigentech.mtgapiclient.cards.model;
+package com.exigentech.mtgapiclient.cards.client.model;
 
 import java.net.URI;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Set;
 import org.immutables.value.Value.Immutable;
 
 @Immutable
-public interface CardPage {
+public interface Page {
   URI self();
   URI last();
   Optional<URI> next();
-  Set<Card> cards();
+  Set<RawCard> cards();
 }

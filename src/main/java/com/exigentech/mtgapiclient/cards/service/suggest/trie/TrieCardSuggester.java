@@ -2,7 +2,7 @@ package com.exigentech.mtgapiclient.cards.service.suggest.trie;
 
 import static java.util.stream.Collectors.toList;
 
-import com.exigentech.mtgapiclient.cards.model.Card;
+import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
 import com.exigentech.mtgapiclient.cards.service.suggest.CardSuggester;
 import java.util.ArrayList;

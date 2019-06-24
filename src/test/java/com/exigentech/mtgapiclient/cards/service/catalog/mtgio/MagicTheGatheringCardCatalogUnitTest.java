@@ -6,10 +6,10 @@
 //import static org.mockito.Mockito.when;
 //
 //import com.exigentech.mtgapiclient.cards.client.CardsClient;
-//import com.exigentech.mtgapiclient.cards.client.mtgio.model.ImmutableRetrievedCard;
-//import com.exigentech.mtgapiclient.cards.model.Card;
-//import com.exigentech.mtgapiclient.cards.model.CardPage;
-//import com.exigentech.mtgapiclient.cards.model.ImmutableCardPage;
+//import com.exigentech.mtgapiclient.cards.client.model.ImmutableRetrievedCard;
+//import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
+//import com.exigentech.mtgapiclient.cards.client.model.Page;
+//import com.exigentech.mtgapiclient.cards.service.catalog.model.ImmutablePage;
 //import java.net.URI;
 //import java.util.List;
 //import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@
 //
 //  @Test
 //  void getAllCards_singlePage() {
-//    final CardPage onlyPage =
-//        ImmutableCardPage.builder()
+//    final Page onlyPage =
+//        ImmutablePage.builder()
 //            .self(URI.create("http://only.com"))
 //            .last(URI.create("http://only.com"))
 //            .addCards(ImmutableRetrievedCard.builder().name("Chandra").build())
@@ -47,8 +47,8 @@
 //
 //  @Test
 //  void getAllCards_multiplePages() {
-//    final CardPage firstPage =
-//        ImmutableCardPage.builder()
+//    final Page firstPage =
+//        ImmutablePage.builder()
 //            .self(URI.create("http://self.com"))
 //            .next(URI.create("http://next.com"))
 //            .last(URI.create("http://last.com"))
@@ -57,8 +57,8 @@
 //
 //    when(cardsClient.getFirstPage()).thenReturn(Mono.just(firstPage));
 //
-//    final CardPage nextPage =
-//        ImmutableCardPage.builder()
+//    final Page nextPage =
+//        ImmutablePage.builder()
 //            .self(URI.create("http://next.com"))
 //            .last(URI.create("http://last.com"))
 //            .addCards(ImmutableRetrievedCard.builder().name("Tibalt").build())
