@@ -41,8 +41,8 @@ public class MagicTheGatheringApiConfig {
   }
 
   @Bean
-  public CardsClient cardsClient(BodyParser bodyParser, WebClient webClient, RawCardToCardMapper mapper) {
-    return new MagicTheGatheringCardsClient(webClient, bodyParser, mapper);
+  public CardsClient cardsClient(BodyParser bodyParser, WebClient webClient) {
+    return new MagicTheGatheringCardsClient(webClient, bodyParser);
   }
 
   @Bean

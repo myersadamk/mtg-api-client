@@ -2,15 +2,12 @@ package com.exigentech.mtgapiclient.cards.client.mtgio;
 
 
 import com.exigentech.mtgapiclient.cards.client.model.Page;
-import com.exigentech.mtgapiclient.cards.client.model.RawCard;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
-import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
 import com.exigentech.mtgapiclient.config.MagicTheGatheringApiConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,8 +19,8 @@ final class MagicTheGatheringCardsClientIntegrationTest {
   private final MagicTheGatheringCardsClient cardsClient;
 
   @Autowired
-  MagicTheGatheringCardsClientIntegrationTest(WebClient client, BodyParser parser, Converter<RawCard, Card> mapper) {
-    cardsClient = new MagicTheGatheringCardsClient(client, parser, mapper);
+  MagicTheGatheringCardsClientIntegrationTest(WebClient client, BodyParser parser) {
+    cardsClient = new MagicTheGatheringCardsClient(client, parser);
   }
 
   @Test

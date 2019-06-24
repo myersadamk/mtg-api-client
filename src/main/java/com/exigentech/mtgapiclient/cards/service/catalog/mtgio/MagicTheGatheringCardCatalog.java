@@ -8,6 +8,7 @@ import com.exigentech.mtgapiclient.cards.client.model.RawCard;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCriteria;
 import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
     this.mapper = mapper;
   }
 
+  @Override
   public Flux<Card> getAllCards() {
     final Flux<Page> pageFlux =
         generate(client::getFirstPage, (response, sink) -> {
@@ -38,7 +40,7 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
           return null;
         });
 
-    return pageFlux.flatMapIterable(Page::cards).map(mapper::convert);
+    return pageFlux.cache(Duration.ofDays(1)).flatMapIterable(Page::cards).map(mapper::convert);
   }
 
   @Override

@@ -6,15 +6,10 @@ import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.client.CardsClientException;
 import com.exigentech.mtgapiclient.cards.client.model.ImmutablePage;
 import com.exigentech.mtgapiclient.cards.client.model.Page;
-import com.exigentech.mtgapiclient.cards.client.model.RawCard;
 import com.exigentech.mtgapiclient.cards.client.model.RawCards;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
-import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
-import com.fasterxml.jackson.core.type.TypeReference;
 import java.net.URI;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,18 +18,13 @@ import reactor.core.publisher.Mono;
 public final class MagicTheGatheringCardsClient implements CardsClient {
 
   private final static URI BASE_URI = URI.create("https://api.magicthegathering.io/v1/cards?page=0");
-  private static final TypeReference<List<Card>> CARDS_TYPE = new TypeReference<>() {
-  };
-
   private final WebClient client;
   private final BodyParser parser;
-  private final Converter<RawCard, Card> mapper;
 
   @Autowired
-  public MagicTheGatheringCardsClient(WebClient client, BodyParser parser, Converter<RawCard, Card> mapper) {
+  public MagicTheGatheringCardsClient(WebClient client, BodyParser parser) {
     this.client = client;
     this.parser = parser;
-    this.mapper = mapper;
   }
 
   @Override

@@ -8,23 +8,18 @@ import static org.mockito.Mockito.when;
 import com.exigentech.mtgapiclient.cards.client.model.ImmutableRawCard;
 import com.exigentech.mtgapiclient.cards.client.model.ImmutableRawCards;
 import com.exigentech.mtgapiclient.cards.client.model.Page;
-import com.exigentech.mtgapiclient.cards.client.model.RawCard;
 import com.exigentech.mtgapiclient.cards.client.model.RawCards;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
-import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.core.ResolvableType;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ClientResponse.Headers;
@@ -32,28 +27,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 import reactor.core.publisher.Mono;
 
-@Disabled("Lazy - maybe refactoring is needed, because this is a pain to test")
 @ExtendWith(MockitoExtension.class)
 class MagicTheGatheringCardsClientUnitTest {
 
   private final BodyParser bodyParser;
   private final WebClient webClient;
-  private final Converter<RawCard, Card> mapper;
 
   private MagicTheGatheringCardsClient magicTheGatheringCardsClient;
 
   private final JacksonTester<RawCards> rawCardsJSON =
       new JacksonTester<>(getClass(), ResolvableType.forClass(RawCards.class), new ObjectMapper());
 
-  MagicTheGatheringCardsClientUnitTest(@Mock BodyParser bodyParser, @Mock WebClient webClient, @Mock Converter<RawCard, Card> mapper) {
+  MagicTheGatheringCardsClientUnitTest(@Mock BodyParser bodyParser, @Mock WebClient webClient) {
+    magicTheGatheringCardsClient = new MagicTheGatheringCardsClient(webClient, bodyParser);
     this.bodyParser = bodyParser;
     this.webClient = webClient;
-    this.mapper = mapper;
-  }
-
-  @BeforeEach
-  void setup() {
-    magicTheGatheringCardsClient = new MagicTheGatheringCardsClient(webClient, bodyParser, mapper);
   }
 
   @Test
@@ -75,7 +63,7 @@ class MagicTheGatheringCardsClientUnitTest {
     when(response.bodyToMono(String.class)).thenReturn(Mono.just(responseBody));
     when(bodyParser.parse(RawCards.class, responseBody)).thenReturn(cards);
 
-    configureWebClientMocks(spec, response, headers);
+    configureWebClientMocks(spec, response);
 
     final Page firstPage = magicTheGatheringCardsClient.getFirstPage().block();
     assertThat(firstPage.last()).isEqualTo(lastPageURI);
@@ -84,13 +72,12 @@ class MagicTheGatheringCardsClientUnitTest {
     assertThat(firstPage.cards()).isEqualTo(cards.cards());
   }
 
-  private void configureWebClientMocks(RequestHeadersUriSpec spec, ClientResponse response, Headers headers) {
+  private void configureWebClientMocks(RequestHeadersUriSpec spec, ClientResponse response) {
     when(webClient.get()).thenReturn(spec);
     when(spec.uri(any(URI.class))).thenReturn(spec);
     when(spec.exchange()).thenReturn(Mono.just(response));
   }
 
-//  RawCard{name=Flamewave Invoker, rarity=Uncommon, cmc=3.0, text={7}{R}: Flamewave Invoker deals 5 damage to target player or planeswalker., manaCost={2}{R}, colorIdentity=[R], colors=[Red], types=[Creature]}
   private static RawCards createCards() {
     return ImmutableRawCards.of(
         ImmutableSet.of(
