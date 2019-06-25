@@ -24,6 +24,11 @@ final class MagicTheGatheringCardsClientIntegrationTest {
   }
 
   @Test
+  void getCardPages() {
+    cardsClient.getPageCount().doOnNext(System.out::println).block();
+  }
+
+  @Test
   void printCardsOnFirstPage() {
     printCardsOnPage(cardsClient.getFirstPage());
   }

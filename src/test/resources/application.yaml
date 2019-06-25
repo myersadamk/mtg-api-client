@@ -9,7 +9,7 @@ test:
     enabled: 'true'
 
     # 200 is chosen as a default base because each page is (currently) 100 cards long.
-    card-retrieval-base: 200
+    card-retrieval-base: 500
 
     # Some tests use a multiplier on the base in order to scan a larger amount of cards, however,
     # they will never exceed this maximum value, which is configurable for performance reasons.

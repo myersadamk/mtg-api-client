@@ -1,14 +1,11 @@
 package com.exigentech.mtgapiclient.cards.service.catalog.mtgio;
 
-import static reactor.core.publisher.Flux.generate;
-
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.client.model.Page;
 import com.exigentech.mtgapiclient.cards.client.model.RawCard;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCriteria;
 import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
-import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
@@ -28,19 +25,11 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
 
   @Override
   public Flux<Card> getAllCards() {
-    final Flux<Page> pageFlux =
-        generate(client::getFirstPage, (response, sink) -> {
-          final var page = response.block();
-          sink.next(page);
-
-          if (page.next().isPresent()) {
-            return client.getNextPage(page);
-          }
-          sink.complete();
-          return null;
-        });
-
-    return pageFlux.cache(Duration.ofDays(1)).flatMapIterable(Page::cards).map(mapper::convert);
+    return client.getFirstPage().flux().expand(client::getNextPage)
+        .map(Page::cards)
+        .flatMap(Flux::fromIterable)
+        .map(mapper::convert)
+        .cache();
   }
 
   @Override

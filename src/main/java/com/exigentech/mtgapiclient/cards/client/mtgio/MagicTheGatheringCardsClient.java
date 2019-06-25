@@ -9,15 +9,17 @@ import com.exigentech.mtgapiclient.cards.client.model.Page;
 import com.exigentech.mtgapiclient.cards.client.model.RawCards;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
 import java.net.URI;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 @Component
 public final class MagicTheGatheringCardsClient implements CardsClient {
 
-  private final static URI BASE_URI = URI.create("https://api.magicthegathering.io/v1/cards?page=0");
+  private final static URI BASE_URI = URI.create("https://api.magicthegathering.io/v1/cards?page=1");
   private final WebClient client;
   private final BodyParser parser;
 
@@ -25,6 +27,14 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
   public MagicTheGatheringCardsClient(WebClient client, BodyParser parser) {
     this.client = client;
     this.parser = parser;
+    UriComponentsBuilder.fromUri(BASE_URI).queryParam("page", "1");
+  }
+
+  public Mono<Integer> getPageCount() {
+    return getFirstPage().cache(Duration.ofHours(4)).map(page -> {
+      final String lastPageUriQuery = page.last().getQuery();
+      return Integer.valueOf(lastPageUriQuery.substring(lastPageUriQuery.indexOf('=') + 1));
+    });
   }
 
   @Override
@@ -34,21 +44,16 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
 
   @Override
   public Mono<Page> getNextPage(Page page) {
-    if (page.self().equals(page.last())) {
-      throw new IllegalArgumentException();
-    }
     return page.next().map(this::get).orElse(Mono.empty());
   }
 
   @Override
   public Mono<Page> getLastPage(Page page) {
-    if (page.self().equals(page.last())) {
-      return Mono.just(page);
-    }
     return get(page.last());
   }
 
   private Mono<Page> get(final URI uri) {
+    System.out.println("Getting " + uri.toString());
     final var page = ImmutablePage.builder().self(uri);
     final var publisher = client.get().uri(uri).exchange();
 
