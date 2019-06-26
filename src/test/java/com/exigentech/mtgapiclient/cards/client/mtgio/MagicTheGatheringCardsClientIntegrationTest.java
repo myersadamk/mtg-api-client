@@ -7,6 +7,7 @@ import com.exigentech.mtgapiclient.config.MagicTheGatheringApiConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,28 +20,28 @@ final class MagicTheGatheringCardsClientIntegrationTest {
   private final MagicTheGatheringCardsClient cardsClient;
 
   @Autowired
-  MagicTheGatheringCardsClientIntegrationTest(WebClient client, BodyParser parser) {
-    cardsClient = new MagicTheGatheringCardsClient(client, parser);
+  MagicTheGatheringCardsClientIntegrationTest(@Value("${api.mtgio.cards.uri}") String baseUri, WebClient client, BodyParser parser) {
+    cardsClient = new MagicTheGatheringCardsClient(baseUri, client, parser);
   }
 
   @Test
   void getCardPages() {
-    cardsClient.getPageCount().doOnNext(System.out::println).block();
+    cardsClient.getLastPageNumber().doOnNext(System.out::println).block();
   }
 
   @Test
   void printCardsOnFirstPage() {
-    printCardsOnPage(cardsClient.getFirstPage());
+    printCardsOnPage(cardsClient.getPage(1));
   }
 
   @Test
   void printCardsOnSecondPage() {
-    printCardsOnPage(cardsClient.getNextPage(cardsClient.getFirstPage().block()));
+    printCardsOnPage(cardsClient.getPage(2));
   }
 
   @Test
   void printCardsOnLastPage() {
-    printCardsOnPage(cardsClient.getLastPage(cardsClient.getFirstPage().block()));
+    printCardsOnPage(cardsClient.getPage(cardsClient.getLastPageNumber().block()));
   }
 
   private static void printCardsOnPage(Mono<Page> page) {

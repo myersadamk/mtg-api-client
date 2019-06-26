@@ -3,11 +3,9 @@ package com.exigentech.mtgapiclient.cards.client.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.function.Function;
+import org.springframework.stereotype.Component;
 
-/**
- * Class may not be carrying its weight.. essentially this just wraps ObjectMapper so we don't have
- * to deal with an annoying try/catch with an IO exception.
- */
+@Component
 public class BodyParser {
 
   private final ObjectMapper mapper;
@@ -17,7 +15,7 @@ public class BodyParser {
   }
 
   public <T> T parse(Class<T> clazz, String body) {
-    return parse(clazz, body, RuntimeException::new);
+    return parse(clazz, body, (thrown) -> new BodyParsingException(thrown));
   }
 
   public <T, R extends RuntimeException>
