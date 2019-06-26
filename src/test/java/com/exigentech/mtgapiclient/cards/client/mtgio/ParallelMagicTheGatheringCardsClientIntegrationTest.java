@@ -30,7 +30,7 @@ final class ParallelMagicTheGatheringCardsClientIntegrationTest {
 
   @Test
   void printCardsOnFirstPage() {
-    printCardsOnPage(cardsClient.getFirstPage());
+    printCardsOnPage(cardsClient.getPage(3));
   }
 
   @Test

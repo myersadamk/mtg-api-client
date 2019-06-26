@@ -10,6 +10,7 @@ public interface CardCriteria {
   default boolean exclusiveMatch() {
     return true;
   }
+
   Optional<String> nameContains();
   Optional<Set<Color>> colorIdentity();
 }

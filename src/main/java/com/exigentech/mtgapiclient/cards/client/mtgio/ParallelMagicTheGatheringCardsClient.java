@@ -9,7 +9,6 @@ import com.exigentech.mtgapiclient.cards.client.model.Page;
 import com.exigentech.mtgapiclient.cards.client.model.RawCards;
 import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
 import java.net.URI;
-import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,15 +30,9 @@ public final class ParallelMagicTheGatheringCardsClient implements ParallelCards
   }
 
   public Mono<Integer> getPageCount() {
-    return getFirstPage().cache(Duration.ofHours(4)).map(page -> {
-      final String lastPageUriQuery = page.last().getQuery();
-      return Integer.valueOf(lastPageUriQuery.substring(lastPageUriQuery.indexOf('=') + 1));
-    });
-  }
-
-  @Override
-  public Mono<Page> getFirstPage() {
-    return getPage(1);
+    return get(BASE_URI)
+        .map(page -> UriComponentsBuilder.fromUri(page.last()).build().getQueryParams().get("page").get(0))
+        .map(Integer::valueOf);
   }
 
   @Override
@@ -53,8 +46,13 @@ public final class ParallelMagicTheGatheringCardsClient implements ParallelCards
     final var publisher = client.get().uri(uri).exchange();
 
     return publisher
+        .cache()
         .doOnError(error -> new CardsClientException("Call to magicthegathering.io failed", error))
-        .doOnNext(spec -> populateLinks(uri, spec.headers().asHttpHeaders(), page))
+//        .doOnNext(spec -> populateLinks(uri, spec.headers().asHttpHeaders(), page))
+        .doOnNext(spec -> {
+          populateLinks(uri, spec.headers().asHttpHeaders(), page);
+          page.currentPageNumber(stripPageNumberFromUri())
+        })
         .flatMap(spec -> spec.bodyToMono(String.class))
         .map(body -> page.cards(parser.parse(RawCards.class, body).cards()).build());
   }
@@ -63,4 +61,7 @@ public final class ParallelMagicTheGatheringCardsClient implements ParallelCards
     return UriComponentsBuilder.fromUri(BASE_URI).queryParam("page", pageNumber).build().toUri();
   }
 
+  private static Integer stripPageNumberFromUri(URI uri) {
+    return Integer.valueOf(UriComponentsBuilder.fromUri(uri).build().getQueryParams().get("page").get(0));
+  }
 }

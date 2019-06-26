@@ -16,6 +16,12 @@ final class PageHeaderIntrospector {
   private static final Pattern NEXT = compile(String.format(LINK_RELATIONSHIP_PATTERN, "next"));
   private static final Pattern LAST = compile(String.format(LINK_RELATIONSHIP_PATTERN, "last"));
 
+  static URI getNextPageUri(final HttpHeaders headers) {
+    return headers.get(LINK).stream().map(content -> {
+      
+    })
+  }
+
   static void populateLinks(final URI self, final HttpHeaders headers, final Builder builder) {
     builder.next(getLink(headers, NEXT));
     builder.last(getLink(headers, LAST).orElse(self));
