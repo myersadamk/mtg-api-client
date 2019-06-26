@@ -1,5 +1,9 @@
+# Build files, Spring initilzr stuff
 /target/
 !.mvn/wrapper/maven-wrapper.jar
+mvnw*
+.mvn
+
 # Compiled class file
 *.class
 
