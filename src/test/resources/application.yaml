@@ -1,6 +1,11 @@
 spring:
   main:
     banner-mode: 'off'
+  logging:
+    level:
+      org:
+        springframework='OFF'
+        root='OFF'
 mtgio:
   cache-duration: 'PT12H'
 test:
