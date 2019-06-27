@@ -34,13 +34,23 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
 
   @Override
   public Flux<Card> getAllCards() {
-    return client.getPage(1).flatMapMany(page -> {
+    return client.getPage(1)
+        .flatMapMany(page -> {
 
-      final var remainingPages = page.nextPageNumber().map(nextPageNumber ->
-          concat(range(nextPageNumber, page.lastPageNumber()).map(client::getPage))
-      ).orElse(empty());
+      final var remainingPages = page.nextPageNumber().map(nextPageNumber -> {
+        final var lastPageNumber = page.lastPageNumber();
 
-      return Flux.merge(just(page), remainingPages).map(Page::cards).flatMap(Flux::fromIterable).map(mapper::convert).cache();
+        if (nextPageNumber.equals(lastPageNumber)) {
+          return client.getPage(lastPageNumber).flux();
+        }
+
+        return concat(range(nextPageNumber, lastPageNumber).map(client::getPage));
+      }).orElse(empty());
+
+      return Flux.merge(just(page), remainingPages)
+          .map(Page::cards)
+          .flatMap(Flux::fromIterable)
+          .map(mapper::convert);
     });
   }
 

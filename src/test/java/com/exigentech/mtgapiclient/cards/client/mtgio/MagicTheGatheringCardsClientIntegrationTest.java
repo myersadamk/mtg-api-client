@@ -1,32 +1,32 @@
 package com.exigentech.mtgapiclient.cards.client.mtgio;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.client.model.Page;
-import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
 import com.exigentech.mtgapiclient.config.MagicTheGatheringApiConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = MagicTheGatheringApiConfig.class)
 final class MagicTheGatheringCardsClientIntegrationTest {
 
-  private final MagicTheGatheringCardsClient cardsClient;
+  private final CardsClient cardsClient;
 
   @Autowired
-  MagicTheGatheringCardsClientIntegrationTest(@Value("${api.mtgio.cards.uri}") String baseUri, WebClient client, BodyParser parser) {
-    cardsClient = new MagicTheGatheringCardsClient(baseUri, client, parser);
+  MagicTheGatheringCardsClientIntegrationTest(CardsClient cardsClient) {
+    this.cardsClient = cardsClient;
   }
 
   @Test
-  void getCardPages() {
-    cardsClient.getLastPageNumber().doOnNext(System.out::println).block();
+  void getLastPageNumber() {
+    assertThat(cardsClient.getLastPageNumber().block()).isEqualTo(cardsClient.getPage(1).block().lastPageNumber());
   }
 
   @Test

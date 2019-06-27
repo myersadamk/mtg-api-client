@@ -10,5 +10,6 @@ public interface Card {
   String name();
   Set<Color> colorIdentity();
   int convertedManaCost();
-//  Map<Color, Integer> convertedManaCost();
+  // TODO: ton of properties to be added here - oh boy!
+  //  Map<Color, Integer> convertedManaCost();
 }

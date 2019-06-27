@@ -6,7 +6,7 @@ import org.immutables.value.Value.Immutable;
 
 @Immutable
 public interface Page {
+  List<RawCard> cards();
   Optional<Integer> nextPageNumber();
   Integer lastPageNumber();
-  List<RawCard> cards();
 }

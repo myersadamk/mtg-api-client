@@ -2,6 +2,7 @@ package com.exigentech.mtgapiclient.cards.client.mtgio;
 
 import static com.exigentech.mtgapiclient.cards.client.mtgio.PageHeaderIntrospector.getLastPageUri;
 import static com.exigentech.mtgapiclient.cards.client.mtgio.PageHeaderIntrospector.getNextPageUri;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.client.CardsClientException;
@@ -39,11 +40,14 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
   }
 
   @Override
-  public Mono<Page> getPage(int index) {
-    final var publisher = client.get().uri(constructUriForPage(index)).exchange();
+  public Mono<Page> getPage(int pageNumber) {
+    checkArgument(pageNumber > 0, "The given pageNumber must be > 0 (the mtgio API is 1-based).");
+
+    final var publisher = client.get().uri(constructUriForPage(pageNumber)).exchange();
     final var pageBuilder = ImmutablePage.builder();
 
-    System.out.println("Getting page at index " + index);
+    // TODO: decide on a logging framework.
+    System.out.println("Getting page at index " + pageNumber);
 
     return publisher
         .doOnError(error -> new CardsClientException("Call to magicthegathering.io failed", error))
@@ -58,7 +62,7 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
               pageBuilder.lastPageNumber(
                   getLastPageUri(headers)
                       .map(MagicTheGatheringCardsClient::stripPageNumberFromUri)
-                      .orElse(index)
+                      .orElse(pageNumber)
               );
             }
         ).flatMap(spec -> spec.bodyToMono(String.class)).map(body -> pageBuilder.cards(parser.parse(RawCards.class, body).cards()).build());

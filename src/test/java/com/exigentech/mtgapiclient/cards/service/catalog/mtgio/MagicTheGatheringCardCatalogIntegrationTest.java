@@ -8,7 +8,6 @@ import com.exigentech.mtgapiclient.cards.service.catalog.ImmutableCardCriteria;
 import com.exigentech.mtgapiclient.cards.service.catalog.model.Color;
 import com.exigentech.mtgapiclient.config.MagicTheGatheringApiConfig;
 import java.util.Set;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+// TODO: Figure out if StepVerifier will work for this (my initial attempts were producing false positives).
+//  Printing stuff is pretty hands-on.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = MagicTheGatheringApiConfig.class)
 //@EnabledIfEnvironmentVariable(named = "test.integration.enabled", matches = "true")
@@ -25,9 +26,7 @@ class MagicTheGatheringCardCatalogIntegrationTest {
   private final int n;
 
   @Autowired
-  MagicTheGatheringCardCatalogIntegrationTest(CardCatalog cardCatalog,
-      @Value("${test.integration.take-n}") int n
-  ) {
+  MagicTheGatheringCardCatalogIntegrationTest(CardCatalog cardCatalog, @Value("${test.integration.take-n}") int n) {
     this.cardCatalog = cardCatalog;
     this.n = n;
   }
@@ -50,20 +49,15 @@ class MagicTheGatheringCardCatalogIntegrationTest {
         ImmutableCardCriteria.builder()
             .colorIdentity(Set.of(Color.GREEN))
             .build()
-    ).replay().take(n / 4).doOnEach(out::println).blockLast();
+    ).take(n / 4).doOnEach(out::println).blockLast();
   }
 
-  /**
-   * TODO: Results in an exception without a large multiplier, presumably because none of the first N cards match. Need to drill down on it.
-   */
   @Test
-  @Disabled
-  void printCardsWithChandraInName() {
+  void printUniqueCard() {
     cardCatalog.matchCards(
         ImmutableCardCriteria.builder()
-            .nameContains("Chandra")
-            .build()
-    ).replay().take(n / 10).doOnEach(out::println).blockLast();
+            .nameContains("Nekrataal")
+            .build()).take(1).doOnEach(System.out::println).blockLast();
   }
 
   @Test
@@ -71,7 +65,6 @@ class MagicTheGatheringCardCatalogIntegrationTest {
     cardCatalog.matchCards(
         ImmutableCardCriteria.builder()
             .nameContains("the")
-            .build()
-    ).take(n).doOnEach(out::println).blockLast();
+            .build()).take(n / 4).doOnEach(System.out::println).blockLast();
   }
 }
