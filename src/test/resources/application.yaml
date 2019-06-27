@@ -1,17 +1,20 @@
 spring:
   main:
     banner-mode: 'off'
-mtgio:
-  cache-duration: 'PT12H'
+  logging:
+    level:
+      org:
+        springframework='OFF'
+        root='OFF'
+api:
+  mtgio:
+    cards:
+      uri: https://api.magicthegathering.io/v1/cards
+#      - cache-duration='PT12H'
 test:
   # Properties defining how the integration tests will be run.
   integration:
     enabled: 'true'
 
     # 200 is chosen as a default base because each page is (currently) 100 cards long.
-    card-retrieval-base: 500
-
-    # Some tests use a multiplier on the base in order to scan a larger amount of cards, however,
-    # they will never exceed this maximum value, which is configurable for performance reasons.
-    # As of 06/24/19, the current card count is ~43k.
-    card-retrieval-max: 1000
+    take-n: 200

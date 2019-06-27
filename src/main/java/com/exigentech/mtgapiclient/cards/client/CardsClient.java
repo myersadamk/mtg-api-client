@@ -1,10 +1,11 @@
 package com.exigentech.mtgapiclient.cards.client;
 
 import com.exigentech.mtgapiclient.cards.client.model.Page;
+import org.springframework.cache.annotation.Cacheable;
 import reactor.core.publisher.Mono;
 
 public interface CardsClient {
-  Mono<Page> getFirstPage();
-  Mono<Page> getNextPage(Page page);
-  Mono<Page> getLastPage(Page page);
+  @Cacheable(value = "cardPages", cacheManager = "cardPagesCacheManager")
+  Mono<Page> getPage(int index);
+  Mono<Integer> getLastPageNumber();
 }

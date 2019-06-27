@@ -1,11 +1,20 @@
 package com.exigentech.mtgapiclient.cards.service.catalog.mtgio;
 
+import static reactor.core.publisher.Flux.concat;
+import static reactor.core.publisher.Flux.empty;
+import static reactor.core.publisher.Flux.just;
+import static reactor.core.publisher.Flux.range;
+
 import com.exigentech.mtgapiclient.cards.client.CardsClient;
 import com.exigentech.mtgapiclient.cards.client.model.Page;
 import com.exigentech.mtgapiclient.cards.client.model.RawCard;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
 import com.exigentech.mtgapiclient.cards.service.catalog.CardCriteria;
 import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
@@ -25,25 +34,52 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
 
   @Override
   public Flux<Card> getAllCards() {
-    return client.getFirstPage().flux().expand(client::getNextPage)
-        .map(Page::cards)
-        .flatMap(Flux::fromIterable)
-        .map(mapper::convert)
-        .cache();
+    return client.getPage(1)
+        .flatMapMany(page -> {
+
+      final var remainingPages = page.nextPageNumber().map(nextPageNumber -> {
+        final var lastPageNumber = page.lastPageNumber();
+
+        if (nextPageNumber.equals(lastPageNumber)) {
+          return client.getPage(lastPageNumber).flux();
+        }
+
+        return concat(range(nextPageNumber, lastPageNumber).map(client::getPage));
+      }).orElse(empty());
+
+      return Flux.merge(just(page), remainingPages)
+          .map(Page::cards)
+          .flatMap(Flux::fromIterable)
+          .map(mapper::convert);
+    });
   }
 
   @Override
   public Flux<Card> matchCards(CardCriteria criteria) {
-    return getAllCards().filter(card -> {
-      boolean matchesCriteria = true;
+    final var matcher = new CardMatcher(criteria);
+    return getAllCards().filter(matcher::test);
+  }
 
-      matchesCriteria &= criteria.nameContains().map(substring -> card.name().contains(substring))
-          .orElse(true);
+  private static final class CardMatcher implements Predicate<Card> {
 
-      matchesCriteria &= criteria.colorIdentity().map(colorIdentity -> card.colorIdentity().containsAll(colorIdentity))
-          .orElse(true);
+    private final CardCriteria criteria;
 
-      return matchesCriteria;
-    });
+    private CardMatcher(CardCriteria criteria) {
+      this.criteria = criteria;
+    }
+
+    @Override
+    public boolean test(Card card) {
+      final var conditions = Stream.of(
+          checkCondition(criteria::nameContains, (name) -> card.name().contains(name)),
+          checkCondition(criteria::colorIdentity, (color) -> card.colorIdentity().containsAll(color))
+      );
+
+      return criteria.exclusiveMatch() ? conditions.allMatch(p -> p.test(card)) : conditions.anyMatch(p -> p.test(card));
+    }
+
+    private static <T> Predicate<Card> checkCondition(Supplier<Optional<T>> criteria, Predicate<T> condition) {
+      return (c) -> criteria.get().map(condition::test).orElse(true);
+    }
   }
 }
