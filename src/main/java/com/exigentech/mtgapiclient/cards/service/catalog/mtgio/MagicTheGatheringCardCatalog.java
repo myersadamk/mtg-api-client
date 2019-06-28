@@ -23,6 +23,8 @@ import reactor.core.publisher.Flux;
 @Service
 public final class MagicTheGatheringCardCatalog implements CardCatalog {
 
+  private static int FIRST_PAGE_NUMBER = 1;
+
   private final CardsClient client;
   private final Converter<RawCard, Card> mapper;
 
@@ -34,24 +36,23 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
 
   @Override
   public Flux<Card> getAllCards() {
-    return client.getPage(1)
+    return client.getPage(FIRST_PAGE_NUMBER)
         .flatMapMany(page -> {
+          final var remainingPages = page.nextPageNumber().map(nextPageNumber -> {
+            final var lastPageNumber = page.lastPageNumber();
 
-      final var remainingPages = page.nextPageNumber().map(nextPageNumber -> {
-        final var lastPageNumber = page.lastPageNumber();
+            if (nextPageNumber.equals(lastPageNumber)) {
+              return client.getPage(lastPageNumber).flux();
+            }
 
-        if (nextPageNumber.equals(lastPageNumber)) {
-          return client.getPage(lastPageNumber).flux();
-        }
+            return concat(range(nextPageNumber, lastPageNumber).map(client::getPage));
+          }).orElse(empty());
 
-        return concat(range(nextPageNumber, lastPageNumber).map(client::getPage));
-      }).orElse(empty());
-
-      return Flux.merge(just(page), remainingPages)
-          .map(Page::cards)
-          .flatMap(Flux::fromIterable)
-          .map(mapper::convert);
-    });
+          return Flux.merge(just(page), remainingPages)
+              .map(Page::cards)
+              .flatMap(Flux::fromIterable)
+              .map(mapper::convert);
+        });
   }
 
   @Override
@@ -71,14 +72,14 @@ public final class MagicTheGatheringCardCatalog implements CardCatalog {
     @Override
     public boolean test(Card card) {
       final var conditions = Stream.of(
-          checkCondition(criteria::nameContains, (name) -> card.name().contains(name)),
-          checkCondition(criteria::colorIdentity, (color) -> card.colorIdentity().containsAll(color))
+          criteriaToPredicate(criteria::nameContains, (name) -> card.name().contains(name)),
+          criteriaToPredicate(criteria::colorIdentity, (color) -> card.colorIdentity().containsAll(color))
       );
 
       return criteria.exclusiveMatch() ? conditions.allMatch(p -> p.test(card)) : conditions.anyMatch(p -> p.test(card));
     }
 
-    private static <T> Predicate<Card> checkCondition(Supplier<Optional<T>> criteria, Predicate<T> condition) {
+    private static <T> Predicate<Card> criteriaToPredicate(Supplier<Optional<T>> criteria, Predicate<T> condition) {
       return (c) -> criteria.get().map(condition::test).orElse(true);
     }
   }

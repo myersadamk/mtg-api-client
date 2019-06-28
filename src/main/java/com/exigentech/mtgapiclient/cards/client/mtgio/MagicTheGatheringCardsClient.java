@@ -33,7 +33,6 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
     this.parser = parser;
   }
 
-
   @Override
   public Mono<Integer> getLastPageNumber() {
     return getPage(1).map(Page::lastPageNumber);
@@ -41,7 +40,7 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
 
   @Override
   public Mono<Page> getPage(int pageNumber) {
-    checkArgument(pageNumber > 0, "The given pageNumber must be > 0 (the mtgio API is 1-based).");
+    checkArgument(pageNumber > 0, "The given pageNumber must be > 0 (the mtg.io API is 1-based).");
 
     final var publisher = client.get().uri(constructUriForPage(pageNumber)).exchange();
     final var pageBuilder = ImmutablePage.builder();
@@ -56,12 +55,12 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
               final var headers = spec.headers().asHttpHeaders();
 
               getNextPageUri(headers)
-                  .map(MagicTheGatheringCardsClient::stripPageNumberFromUri)
+                  .map(MagicTheGatheringCardsClient::getPageNumberFromUri)
                   .map(pageBuilder::nextPageNumber);
 
               pageBuilder.lastPageNumber(
                   getLastPageUri(headers)
-                      .map(MagicTheGatheringCardsClient::stripPageNumberFromUri)
+                      .map(MagicTheGatheringCardsClient::getPageNumberFromUri)
                       .orElse(pageNumber)
               );
             }
@@ -72,7 +71,7 @@ public final class MagicTheGatheringCardsClient implements CardsClient {
     return UriComponentsBuilder.fromUri(baseUri).queryParam("page", pageNumber).build().toUri();
   }
 
-  private static Integer stripPageNumberFromUri(UriComponents uriComponents) {
+  private static Integer getPageNumberFromUri(UriComponents uriComponents) {
     return Integer.valueOf(uriComponents.getQueryParams().get("page").get(0));
   }
 }
