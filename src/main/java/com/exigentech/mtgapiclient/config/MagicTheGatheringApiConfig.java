@@ -2,14 +2,14 @@ package com.exigentech.mtgapiclient.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
-import com.exigentech.mtgapiclient.cards.client.CardsClient;
-import com.exigentech.mtgapiclient.cards.client.model.RawCard;
-import com.exigentech.mtgapiclient.cards.client.mtgio.MagicTheGatheringCardsClient;
-import com.exigentech.mtgapiclient.cards.client.util.BodyParser;
-import com.exigentech.mtgapiclient.cards.service.catalog.CardCatalog;
-import com.exigentech.mtgapiclient.cards.service.catalog.mapping.RawCardToCardMapper;
-import com.exigentech.mtgapiclient.cards.service.catalog.model.Card;
-import com.exigentech.mtgapiclient.cards.service.catalog.mtgio.MagicTheGatheringCardCatalog;
+import com.exigentech.mtgapiclient.card.client.CardsClient;
+import com.exigentech.mtgapiclient.card.client.model.RawCard;
+import com.exigentech.mtgapiclient.card.client.mtgio.MagicTheGatheringCardsClient;
+import com.exigentech.mtgapiclient.card.client.util.BodyParser;
+import com.exigentech.mtgapiclient.card.catalog.CardCatalog;
+import com.exigentech.mtgapiclient.card.catalog.mapping.RawCardToCardMapper;
+import com.exigentech.mtgapiclient.card.catalog.model.Card;
+import com.exigentech.mtgapiclient.card.catalog.mtgio.MagicTheGatheringCardCatalog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;

@@ -1,0 +1,74 @@
+Getting page at index 1
+Getting page at index 2
+Getting page at index 3
+Getting page at index 4
+Getting page at index 5
+Getting page at index 6
+Getting page at index 7
+Getting page at index 8
+Getting page at index 9
+Getting page at index 10
+Getting page at index 11
+Getting page at index 12
+Getting page at index 13
+Getting page at index 14
+Getting page at index 15
+Getting page at index 16
+Getting page at index 17
+Getting page at index 18
+Getting page at index 19
+Getting page at index 20
+Getting page at index 21
+Getting page at index 22
+Getting page at index 23
+Getting page at index 24
+Getting page at index 25
+Getting page at index 26
+Getting page at index 27
+Getting page at index 28
+Getting page at index 29
+Getting page at index 30
+Getting page at index 31
+Getting page at index 32
+Getting page at index 33
+Getting page at index 34
+Getting page at index 35
+Getting page at index 36
+Getting page at index 37
+Getting page at index 38
+Getting page at index 39
+Getting page at index 40
+Getting page at index 41
+Getting page at index 42
+Getting page at index 43
+Getting page at index 44
+Getting page at index 45
+Getting page at index 46
+Getting page at index 47
+Getting page at index 48
+Getting page at index 49
+Getting page at index 50
+com.exigentech.mtgapiclient.search.trie.RedundantTrie@6dee8ae6
+com.exigentech.mtgapiclient.search.trie.RedundantTrie@6dee8ae6
+Chandra's Outrage
+Chandra's Revolution
+Channel
+Channel the Suns
+Channeler Initiate
+Cut
+Heal
+Shunt
+Clone
+Dawn
+Pox
+Rhox
+Fear
+Fog
+Lead
+Slay
+Choke
+Okk
+Web
+Chill
+Stun
+
